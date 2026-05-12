@@ -1,6 +1,6 @@
 # tests/integration/test_feedback_flow.py
 from langchain_core.messages import HumanMessage
-from graph import build_feedback_graph
+from pipeline import build_feedback_graph
 
 feedback_graph = build_feedback_graph()
 feedback_config = {"configurable": {"thread_id": "feedback"}}

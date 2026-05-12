@@ -1,5 +1,5 @@
 # tests/integration/test_resume_flow.py
-from graph import build_resume_graph
+from pipeline import build_resume_graph
 from .sample_data import SAMPLE_RESUME
 
 resume_graph = build_resume_graph()

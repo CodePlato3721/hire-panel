@@ -1,6 +1,6 @@
 # tests/integration/test_jd_flow.py
 from langgraph.types import Command
-from graph import build_jd_graph
+from pipeline import build_jd_graph
 from .sample_data import SAMPLE_JD
 
 jd_graph = build_jd_graph()
