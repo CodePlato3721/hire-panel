@@ -66,6 +66,9 @@ def process_feedback(state: ResumeState) -> Command:
 
     # Update criteria if HR changed weights
     if analysis.has_criteria_change:
-        update["scoring_criteria"] = analysis.updated_criteria
+        update["scoring_criteria"] = [
+            {"name": c.name, "description": c.description}
+            for c in analysis.updated_criteria
+        ]
 
     return Command(update=update, goto="rescore_all")
