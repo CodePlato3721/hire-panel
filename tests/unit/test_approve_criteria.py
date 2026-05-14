@@ -2,11 +2,12 @@ import pytest
 from unittest.mock import MagicMock, patch
 from langgraph.types import Command
 
-from pipeline.nodes.approve_criteria import approve_criteria, _format_criteria
+from pipeline.nodes.approve_criteria import approve_criteria
+from pipeline.utils import format_criteria
 
 
 # ---------------------------------------------------------------------------
-# _format_criteria
+# format_criteria
 # ---------------------------------------------------------------------------
 
 def test_format_criteria_multiple():
@@ -14,17 +15,17 @@ def test_format_criteria_multiple():
         {"name": "Python", "description": "3+ years"},
         {"name": "Communication", "description": "Clear writing"},
     ]
-    result = _format_criteria(criteria)
+    result = format_criteria(criteria)
     assert result == "- **Python**: 3+ years\n- **Communication**: Clear writing"
 
 
 def test_format_criteria_single():
     criteria = [{"name": "SQL", "description": "Basic queries"}]
-    assert _format_criteria(criteria) == "- **SQL**: Basic queries"
+    assert format_criteria(criteria) == "- **SQL**: Basic queries"
 
 
 def test_format_criteria_empty():
-    assert _format_criteria([]) == ""
+    assert format_criteria([]) == ""
 
 
 # ---------------------------------------------------------------------------
@@ -95,27 +96,41 @@ def test_revision_updates_scoring_criteria():
     assert result.update["scoring_criteria"] == revised
 
 
-def test_revision_message_contains_revised_criteria():
-    revised = [{"name": "Go", "description": "2+ years"}]
-    with patch("pipeline.nodes.approve_criteria.interrupt", return_value={"feedback": "switch to Go"}), \
+# ---------------------------------------------------------------------------
+# Boundary conditions
+# ---------------------------------------------------------------------------
+
+def test_approve_uppercase_keyword():
+    with patch("pipeline.nodes.approve_criteria.interrupt", return_value={"feedback": "OK"}):
+        result = approve_criteria(SAMPLE_STATE)
+
+    assert result.goto == "__end__"
+
+
+def test_empty_feedback_goes_to_revision():
+    revised = [{"name": "Python", "description": "3+ years"}]
+    with patch("pipeline.nodes.approve_criteria.interrupt", return_value={"feedback": ""}), \
          patch("pipeline.nodes.approve_criteria.llm", _make_llm_mock(revised)):
         result = approve_criteria(SAMPLE_STATE)
 
-    content = result.update["messages"][0].content
-    assert "Go" in content
-    assert "2+ years" in content
+    assert result.goto == "approve_criteria"
 
 
-def test_revision_llm_receives_current_criteria_and_feedback():
-    revised = [{"name": "Python", "description": "5+ years"}]
-    mock_llm = _make_llm_mock(revised)
-    feedback_text = "require more seniority"
+def test_approve_with_empty_scoring_criteria():
+    state = {**SAMPLE_STATE, "scoring_criteria": []}
+    with patch("pipeline.nodes.approve_criteria.interrupt", return_value={"feedback": "ok"}):
+        result = approve_criteria(state)
 
-    with patch("pipeline.nodes.approve_criteria.interrupt", return_value={"feedback": feedback_text}), \
-         patch("pipeline.nodes.approve_criteria.llm", mock_llm):
-        approve_criteria(SAMPLE_STATE)
+    assert result.goto == "__end__"
 
-    invoke_args = mock_llm.with_structured_output.return_value.invoke.call_args[0][0]
-    user_message = invoke_args[1]["content"]
-    assert "Python" in user_message
-    assert feedback_text in user_message
+
+def test_revision_with_empty_scoring_criteria():
+    state = {**SAMPLE_STATE, "scoring_criteria": []}
+    revised = [{"name": "Python", "description": "3+ years"}]
+    with patch("pipeline.nodes.approve_criteria.interrupt", return_value={"feedback": "add python criterion"}), \
+         patch("pipeline.nodes.approve_criteria.llm", _make_llm_mock(revised)):
+        result = approve_criteria(state)
+
+    assert result.update["scoring_criteria"] == revised
+
+

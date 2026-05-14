@@ -5,14 +5,11 @@ from langgraph.types import Command, interrupt
 from ..state import JDState
 from ..schemas.jd_schemas import ExtractedCriteria
 from ..prompts.jd_prompts import REVISE_CRITERIA_SYSTEM
+from ..utils import format_criteria
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 
 APPROVED_KEYWORDS = {"ok", "yes", "confirm", "looks good", "good"}
-
-
-def _format_criteria(criteria) -> str:
-    return "\n".join(f"- **{c['name']}**: {c['description']}" for c in criteria)
 
 
 def approve_criteria(state: JDState) -> Command:
@@ -34,7 +31,7 @@ def approve_criteria(state: JDState) -> Command:
         update={
             "scoring_criteria": result.criteria,
             "messages": [AIMessage(content=(
-                f"Revised criteria:\n\n{_format_criteria(result.criteria)}\n\n"
+                f"Revised criteria:\n\n{format_criteria(result.criteria)}\n\n"
                 f"Reply **ok** to confirm or continue adjusting."
             ))]
         },
