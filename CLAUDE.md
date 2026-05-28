@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Workflow Rules
+
+- **Never commit changes directly.** After making any code modifications, stop and wait for the user to review the diff before creating any git commit.
+
 ## Commands
 
 ```bash
