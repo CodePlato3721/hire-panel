@@ -77,6 +77,13 @@ Each criterion is scored 1–10; `total_score` is the raw sum — not normalized
 - Graph state is persisted with `MemorySaver` and scoped by `thread_id` in `configurable` — each test flow uses its own thread.
 - `HRMemory` accumulates across feedback rounds; pass it forward explicitly when chaining the resume and feedback graphs. Currently in-memory only; plan is to persist to a markdown file in a future iteration.
 
+## 单次改动颗粒度
+
+每一次改动保持小颗粒度。颗粒度判断标准：
+
+- **同层改动**：单次改动尽量只改同一层。改 service 就不改 router/view；改业务逻辑 py 就不改 REST API 层。
+- **一句话概括检验**：本次改动的 CR 中，Design（feature）或 Solution（defect）必须能用一句简短的话概括完。如果需要列多件事才能描述清楚，说明颗粒度太大，应拆分。
+
 ## CR(commit request)
 
 每次模型修改完代码**必须**不直接 commit，并且生成一份 CR(commit request)。
