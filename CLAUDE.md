@@ -116,17 +116,34 @@ CR 文件**只存储在本地**，不会提交。approve 或 reject 执行完对
 
 CR 分为 feature 和 defect 两种。
 
+**Source Tree** 和 **Test Tree** 必须使用 ASCII 文件树格式，不可以用一句话代替，例如：
+```
+project/
+├── src/
+│   └── service.py    ← updated
+└── tests/
+    └── test_service.py    ← new
+```
+
 **feature**
 - **Design**：本次改动的设计摘要
 - **Source Details**：源码核心细节，1~2 行代码，简短，不含测试改动
-- **Source Tree**：本次改动的源码文件树
+- **Source Tree**：本次改动的源码文件树（ASCII 树）
 - **Test Details**：测试改动摘要；若无自动化测试，写手动验证步骤；若附有脚手架代码，注明下次删除
-- **Test Tree**：本次改动的测试文件树
+- **Test Tree**：本次改动的测试文件树（ASCII 树）；若无测试文件改动，写 `(无变更)` 占位
+- **Test Result**：见下方说明
 
 **defect**
 - **Root Cause**：defect 的根本原因
 - **Solution**：修改方案摘要
 - **Source Details**：源码核心细节，1~2 行代码，简短，不含测试改动
-- **Source Tree**：本次改动的源码文件树
+- **Source Tree**：本次改动的源码文件树（ASCII 树）
 - **Test Details**：测试改动摘要；若无自动化测试，写手动验证步骤；若附有脚手架代码，注明下次删除
-- **Test Tree**：本次改动的测试文件树
+- **Test Tree**：本次改动的测试文件树（ASCII 树）；若无测试文件改动，写 `(无变更)` 占位
+- **Test Result**：见下方说明
+
+**Test Result 规则**
+根据本次改动的测试文件类型，分为三种情况：
+- **单元测试**：模型自己执行单元测试，将执行结果摘要写入 Test Result（通过/失败条数、失败原因）
+- **集成测试**：模型自己执行集成测试，将执行结果摘要写入 Test Result
+- **人工测试**：写 `人工测试，不提供 Test Result，具体验证方式见 Test Details`
