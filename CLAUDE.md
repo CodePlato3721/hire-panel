@@ -77,53 +77,56 @@ Each criterion is scored 1–10; `total_score` is the raw sum — not normalized
 - Graph state is persisted with `MemorySaver` and scoped by `thread_id` in `configurable` — each test flow uses its own thread.
 - `HRMemory` accumulates across feedback rounds; pass it forward explicitly when chaining the resume and feedback graphs. Currently in-memory only; plan is to persist to a markdown file in a future iteration.
 
-## 单次改动颗粒度
+## 单次改动规范
+
+### 颗粒度
 
 每一次改动保持小颗粒度。颗粒度判断标准：
 
 - **同层改动**：单次改动尽量只改同一层。改 service 就不改 router/view；改业务逻辑 py 就不改 REST API 层。
 - **一句话概括检验**：本次改动的 CR 中，Design（feature）或 Solution（defect）必须能用一句简短的话概括完。如果需要列多件事才能描述清楚，说明颗粒度太大，应拆分。
 - **颗粒度不应过小**：如果本次改动本身就只涉及配置（例如某个 defect 就是配置错误，或本次只改 `CLAUDE.md` / `.gitignore`），则配置单独成一个 CR 是合理的。但如果配置改动是为了支撑业务逻辑改动（例如为新功能新增依赖），则依赖变更与源码改动应合并在同一个 CR 里，不应拆开。
+- **改动必须闭合**：每次改动都必须有验证手段，保证不会提交错误代码后再修改。验证方式按优先级：
+  1. 项目已有对应层的**单元测试** → 随改动一起更新，CR 的 Test Details 写测试摘要。
+  2. 项目已有**端到端测试** → 随改动一起更新，CR 的 Test Details 写测试摘要。
+  3. 无自动化测试 → 在 CR 的 Test Details 里写清楚**手动验证步骤**，告诉用户执行哪条命令或操作来验证本次改动正确。
+  4. 连手动验证都难以做到（例如改动依赖外部环境尚未就绪）→ 在本次改动中附上**临时测试脚手架代码**，CR 注明"下次改动删除脚手架"，下一个 CR 中去除。
 
-## CR(commit request)
+### CR（commit request）
 
-每次模型修改完代码**必须**不直接 commit，并且生成一份 CR(commit request)。
-CR 的作用是修改的摘要，方便用户以及其他 agent 了解改动。
-CR 生成后会回显给用户，并且写入 `.cr.md` 文件。
+每次模型修改完代码**必须**不直接 commit，并且生成一份 CR。
+CR 的作用是改动摘要，方便用户及其他 agent 了解改动。
+CR 生成后回显给用户，并写入 `.cr.md` 文件。
 
-### CR 的 reply
+#### CR 的 reply
 
 CR 创建后等待用户 reply。reply 分为 3 种：
-- **approve**：执行 commit & push 的行为。并进行**reply 后的 CR 文件操作**
-- **reject**：回滚所有改动。并进行**reply 后的 CR 文件操作**
-- **modify**：modify 不是一种 reply。用户可以不说 modify。用户只需要 1. 自己手动更改，并要求模型再次生成 CR。 2. 让模型修改代码，模型自动再生成一次 CR。 3. 用户只是询问修改的细节，但是不做任何修改，也不再次生成 CR。再次生成 CR 后继续等待用户的 reply，重复这个动作
+- **approve**：执行 commit & push。并进行**reply 后的 CR 文件操作**。
+- **reject**：回滚所有改动。并进行**reply 后的 CR 文件操作**。
+- **modify**：modify 不是一种 reply。用户可以不说 modify。用户只需要：1. 自己手动更改并要求模型再次生成 CR；2. 让模型修改代码，模型自动再生成一次 CR；3. 用户只是询问细节，不做修改也不再次生成 CR。再次生成 CR 后继续等待 reply，重复此动作。
 
-### reply 后的 CR 文件操作
+#### reply 后的 CR 文件操作
 
-CR 文件**只存储在本地**，不会提交。如果用户 reply 是 approve 或者 reject，则在执行相对应的操作后，对 CR 进行如下操作：
-- `.cr.md` 被重命名为 `.cr.<timestamp>.md`，`timestamp` 格式 `yyyyMMddhhmmss`
-- 重命名后被移入 `.cr` 文件夹。如果没有 `.cr` 文件夹就新建
-- `.cr.md` 和 `.cr` 文件夹都会被加入 `.gitignore`
+CR 文件**只存储在本地**，不会提交。approve 或 reject 执行完对应操作后：
+- `.cr.md` 重命名为 `.cr.<timestamp>.md`，`timestamp` 格式 `yyyyMMddhhmmss`
+- 移入 `.cr` 文件夹（不存在则新建）
+- `.cr.md` 和 `.cr/` 已加入 `.gitignore`
 
-### CR 的格式
+#### CR 的格式
 
-CR 根据改动分为 2 种：feature 和 defect。以下是两种 CR 的格式。
+CR 分为 feature 和 defect 两种。
 
-#### feature
-
-包含以下结构：
+**feature**
 - **Design**：本次改动的设计摘要
-- **Source Details**：本次改动的源码的核心细节摘要。非核心改动不需要提及。核心改动只需要提 1~2 行代码，简短。不包含测试用例的改动
-- **Source Tree**：本次改动的源代码文件树
-- **Test Details**：本次改动的测试用例的改动摘要
-- **Test Tree**：本次改动的测试用例文件树
+- **Source Details**：源码核心细节，1~2 行代码，简短，不含测试改动
+- **Source Tree**：本次改动的源码文件树
+- **Test Details**：测试改动摘要；若无自动化测试，写手动验证步骤；若附有脚手架代码，注明下次删除
+- **Test Tree**：本次改动的测试文件树
 
-#### defect
-
-包含以下结构：
-- **Root Cause**：这个 defect 的 Root Cause
-- **Solution**：修改方案的摘要
-- **Source Details**：本次改动的源码的核心细节摘要。非核心改动不需要提及。核心改动只需要提 1~2 行代码，简短。不包含测试用例的改动
-- **Source Tree**：本次改动的源代码文件树
-- **Test Details**：本次改动的测试用例的改动摘要
-- **Test Tree**：本次改动的测试用例文件树
+**defect**
+- **Root Cause**：defect 的根本原因
+- **Solution**：修改方案摘要
+- **Source Details**：源码核心细节，1~2 行代码，简短，不含测试改动
+- **Source Tree**：本次改动的源码文件树
+- **Test Details**：测试改动摘要；若无自动化测试，写手动验证步骤；若附有脚手架代码，注明下次删除
+- **Test Tree**：本次改动的测试文件树
