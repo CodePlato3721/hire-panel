@@ -16,7 +16,7 @@
 
 ## 待完成
 
-- [ ] **Task A** — pipeline graphs 改为 checkpointer 参数注入
+- [x] **Task A** — pipeline graphs 改为 checkpointer 参数注入
   `pipeline/jd_graph.py`、`resume_graph.py`、`feedback_graph.py` 将 `InMemorySaver()` 改为外部传入，pipeline 层。
 
 - [ ] **Task B1** — `backend/services/graph_runner.py`（graph 构建）

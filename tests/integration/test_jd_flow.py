@@ -1,9 +1,10 @@
 # tests/integration/test_jd_flow.py
 from langgraph.types import Command
+from langgraph.checkpoint.memory import InMemorySaver
 from pipeline import build_jd_graph
 from .sample_data import SAMPLE_JD
 
-jd_graph = build_jd_graph()
+jd_graph = build_jd_graph(InMemorySaver())
 jd_config = {"configurable": {"thread_id": "jd"}}
 
 

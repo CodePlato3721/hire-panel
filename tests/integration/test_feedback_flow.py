@@ -1,8 +1,9 @@
 # tests/integration/test_feedback_flow.py
 from langchain_core.messages import HumanMessage
+from langgraph.checkpoint.memory import InMemorySaver
 from pipeline import build_feedback_graph
 
-feedback_graph = build_feedback_graph()
+feedback_graph = build_feedback_graph(InMemorySaver())
 feedback_config = {"configurable": {"thread_id": "feedback"}}
 
 
