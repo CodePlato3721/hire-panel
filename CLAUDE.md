@@ -83,6 +83,7 @@ Each criterion is scored 1–10; `total_score` is the raw sum — not normalized
 
 - **同层改动**：单次改动尽量只改同一层。改 service 就不改 router/view；改业务逻辑 py 就不改 REST API 层。
 - **一句话概括检验**：本次改动的 CR 中，Design（feature）或 Solution（defect）必须能用一句简短的话概括完。如果需要列多件事才能描述清楚，说明颗粒度太大，应拆分。
+- **颗粒度不应过小**：如果本次改动本身就只涉及配置（例如某个 defect 就是配置错误，或本次只改 `CLAUDE.md` / `.gitignore`），则配置单独成一个 CR 是合理的。但如果配置改动是为了支撑业务逻辑改动（例如为新功能新增依赖），则依赖变更与源码改动应合并在同一个 CR 里，不应拆开。
 
 ## CR(commit request)
 
