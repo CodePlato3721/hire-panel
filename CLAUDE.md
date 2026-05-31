@@ -98,6 +98,8 @@ Each criterion is scored 1–10; `total_score` is the raw sum — not normalized
 CR 的作用是改动摘要，方便用户及其他 agent 了解改动。
 CR 生成后回显给用户，并写入 `.cr.md` 文件。
 
+**CR 回显规则**：回显给用户的 Chat 版本必须与 `.cr.md` 完全一致，包含所有字段，不得省略任何一项。缺少任何字段的 CR 视为不合规。
+
 #### CR 的 reply
 
 CR 创建后等待用户 reply。reply 分为 3 种：
