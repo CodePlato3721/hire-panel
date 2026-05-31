@@ -28,7 +28,7 @@
   `POST /api/sessions/{session_id}/resumes`（上传文件，运行 resume graph，SSE 流）
   router 内直接调用 `build_resume_graph(get_checkpointer())`，router + schema 层。
 
-- [ ] **Task E** — Feedback 端点
+- [x] **Task E** — Feedback 端点
   `POST /api/sessions/{session_id}/feedback`（提交反馈，运行 feedback graph，SSE 流）
   router 内直接调用 `build_feedback_graph(get_checkpointer())`，router + schema 层。
 

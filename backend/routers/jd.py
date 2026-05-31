@@ -5,6 +5,7 @@ from langgraph.types import Command
 
 from backend.schemas.jd import JDSubmitRequest, JDReplyRequest
 from backend.services.db import get_checkpointer
+from backend.services.session import graph_config
 from backend.routers.sse import events_to_sse_tokens
 from pipeline.jd_graph import build_jd_graph
 
@@ -21,7 +22,7 @@ async def _stream_jd(events, graph, config):
 @router.post("/{session_id}/jd")
 async def submit_jd(session_id: str, req: JDSubmitRequest):
     graph = build_jd_graph(get_checkpointer())
-    config = {"configurable": {"thread_id": session_id}}
+    config = graph_config(session_id, "jd")
     events = graph.astream_events(
         {"messages": [], "job_requirements": req.jd_text, "scoring_criteria": []},
         config,
@@ -33,7 +34,7 @@ async def submit_jd(session_id: str, req: JDSubmitRequest):
 @router.post("/{session_id}/jd/reply")
 async def reply_jd(session_id: str, req: JDReplyRequest):
     graph = build_jd_graph(get_checkpointer())
-    config = {"configurable": {"thread_id": session_id}}
+    config = graph_config(session_id, "jd")
     events = graph.astream_events(
         Command(resume={"feedback": req.reply}),
         config,
