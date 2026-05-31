@@ -24,3 +24,6 @@ dev = [
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+markers = [
+    "e2e: end-to-end smoke tests (require OPENAI_API_KEY)",
+]

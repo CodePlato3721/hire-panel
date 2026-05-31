@@ -1,5 +1,3 @@
-# tests/integration/sample_data.py
-
 SAMPLE_JD = """
 We are looking for a Senior Python Engineer to join our AI team.
 Requirements:
