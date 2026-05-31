@@ -103,14 +103,16 @@ CR 生成后回显给用户，并写入 `.cr.md` 文件。
 #### CR 的 reply
 
 CR 创建后等待用户 reply。reply 分为以下几种：
-- **approve**：执行 commit & push。并进行**reply 后的 CR 文件操作**。
-- **reject**：回滚所有改动。并进行**reply 后的 CR 文件操作**。
+- **approve**：回复"approve, <理由>"。执行 commit & push。并进行**reply 后的 CR 文件操作**。
+- **reject**：回复"reject, <理由>"。回滚所有改动。并进行**reply 后的 CR 文件操作**。
+- **remake**：回复"remake"。当 CR 混乱或内容有误时使用。模型基于 `git diff HEAD` 全量 diff 从头生成一份新 CR，覆盖当前 `.cr.md`，回显给用户后继续等待 reply。
 - **ask**：用户通过多轮提问了解本次改动的细节，不造成任何代码改动。模型只回答问题，不执行任何操作，不重新生成 CR。用户问完后再做出 approve 或 reject 的决定。
-- **modify**：修改。用户可以：1. 自己手动更改并要求模型再次生成 CR；2. 让模型修改代码，模型自动再生成一次 CR。再次生成 CR 后继续等待 reply，重复此动作。
+- **modify**：修改。用户可以：1. 自己手动更改并要求模型再次生成 CR；2. 让模型修改代码，模型自动再生成一次 CR。再次生成 CR 后继续等待 reply，重复此动作。重新生成的 CR 必须在**现有 CR 基础上补充或修正**，不得将当前 CR 整体替换重做——只有方案发生根本性变化时，才由用户先 reject 再重新生成。
 
 #### reply 后的 CR 文件操作
 
 CR 文件**只存储在本地**，不会提交。approve 或 reject 执行完对应操作后：
+- `.cr.md` 中增加 **Reply** 段落，写上reply的结果和理由。可选的结果有 approve, reject
 - `.cr.md` 重命名为 `.cr.<timestamp>.md`，`timestamp` 格式 `yyyyMMddhhmmss`
 - 移入 `.cr` 文件夹（不存在则新建）
 - `.cr.md` 和 `.cr/` 已加入 `.gitignore`
@@ -132,21 +134,35 @@ project/
 - **Design**：本次改动的设计摘要
 - **Source Details**：源码核心细节，1~2 行代码，简短，不含测试改动
 - **Source Tree**：本次改动的源码文件树（ASCII 树）
-- **Test Details**：测试改动摘要；若无自动化测试，写手动验证步骤；若附有脚手架代码，注明下次删除
-- **Test Tree**：本次改动的测试文件树（ASCII 树）；若无测试文件改动，写 `(无变更)` 占位
-- **Test Result**：见下方说明
+- **Test Details**：测试改动摘要。细节见 **CR 的测试方式**
+- **Test Tree**：本次改动的测试文件树（ASCII 树）；细节见 **CR 的测试方式**
+- **Test Result**：测试的结果。细节见 **CR 的测试方式**
 
 **defect**
 - **Root Cause**：defect 的根本原因
 - **Solution**：修改方案摘要
 - **Source Details**：源码核心细节，1~2 行代码，简短，不含测试改动
 - **Source Tree**：本次改动的源码文件树（ASCII 树）
-- **Test Details**：测试改动摘要；若无自动化测试，写手动验证步骤；若附有脚手架代码，注明下次删除
-- **Test Tree**：本次改动的测试文件树（ASCII 树）；若无测试文件改动，写 `(无变更)` 占位
-- **Test Result**：见下方说明
+- **Test Details**：测试改动摘要。细节见 **CR 的测试方式**
+- **Test Tree**：本次改动的测试文件树（ASCII 树）；细节见 **CR 的测试方式**
+- **Test Result**：测试的结果。细节见 **CR 的测试方式**
 
-**Test Result 规则**
-根据本次改动的测试文件类型，分为三种情况：
-- **单元测试**：模型自己执行单元测试，将执行结果摘要写入 Test Result（通过/失败条数、失败原因）
-- **集成测试**：模型自己执行集成测试，将执行结果摘要写入 Test Result
-- **人工测试**：写 `人工测试，不提供 Test Result，具体验证方式见 Test Details`
+#### CR 的测试方式
+CR中可选的测试方式有端到端测试，单元测试，无测试。他们有不同的处理方式。
+**无测试**
+本次改动不需要测试，比如更新CLAUDE.md的文本内容，修改.gitignore等
+- **Test Details**： `无变更`
+- **Test Tree**： `无变更`
+- **Test Result**： `无变更`
+
+**单元测试**
+模型自己在 `tests/unit`下新增，更改单元测试，执行单元测试，将执行结果摘要写入 Test Result（通过/失败条数、失败原因）
+- **Test Details**：写出本次单元测试的测试目的，方式的摘要
+- **Test Tree**：本次改动的测试文件树（ASCII 树）
+- **Test Result**：单元测试的结果
+
+**端到端测试**
+模型自己在 `tests/e2d`下新增，更改端到端测试，将执行结果摘要写入 Test Result
+- **Test Details**：写出本次单元测试的测试目的，方式的摘要
+- **Test Tree**：本次改动的测试文件树（ASCII 树）
+- **Test Result**：端到端测试的结果
