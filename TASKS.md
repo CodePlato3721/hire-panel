@@ -19,7 +19,7 @@
 - [x] **Task A** — pipeline graphs 改为 checkpointer 参数注入
   `pipeline/jd_graph.py`、`resume_graph.py`、`feedback_graph.py` 将 `InMemorySaver()` 改为外部传入，pipeline 层。
 
-- [ ] **Task C** — JD 端点
+- [x] **Task C** — JD 端点
   `POST /api/sessions/{session_id}/jd`（提交 JD，启动 JD graph，SSE 流）
   `POST /api/sessions/{session_id}/jd/reply`（审批/修改 criteria，恢复 graph，SSE 流）
   router 内直接调用 `build_jd_graph(get_checkpointer())`，router + schema 层。
