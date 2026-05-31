@@ -36,6 +36,6 @@
   `GET /api/sessions/{session_id}` 从 checkpointer 读取 graph 状态，推导真实 stage / criteria / resumes。
   router 层。
 
-- [ ] **Task G** — CORS middleware
+- [x] **Task G** — CORS middleware
   `backend/main.py` 加 `CORSMiddleware`，允许 React dev server（localhost:5173）跨域。
   app 层。
