@@ -32,7 +32,7 @@
   `POST /api/sessions/{session_id}/feedback`（提交反馈，运行 feedback graph，SSE 流）
   router 内直接调用 `build_feedback_graph(get_checkpointer())`，router + schema 层。
 
-- [ ] **Task F** — 真实 session 状态推导
+- [x] **Task F** — 真实 session 状态推导
   `GET /api/sessions/{session_id}` 从 checkpointer 读取 graph 状态，推导真实 stage / criteria / resumes。
   router 层。
 

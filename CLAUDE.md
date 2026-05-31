@@ -103,7 +103,7 @@ CR 生成后回显给用户，并写入 `.cr.md` 文件。
 #### CR 的 reply
 
 CR 创建后等待用户 reply。reply 分为以下几种：
-- **approve**：回复"approve, <理由>"。执行 commit & push。并进行**reply 后的 CR 文件操作**。
+- **approve**：回复"approve, <理由>"。进行**reply 后的 CR 文件操作**。最后执行 commit & push。
 - **reject**：回复"reject, <理由>"。回滚所有改动。并进行**reply 后的 CR 文件操作**。
 - **remake**：回复"remake"。当 CR 混乱或内容有误时使用。模型基于 `git diff HEAD` 全量 diff 从头生成一份新 CR，覆盖当前 `.cr.md`，回显给用户后继续等待 reply。
 - **ask**：用户通过多轮提问了解本次改动的细节，不造成任何代码改动。模型只回答问题，不执行任何操作，不重新生成 CR。用户问完后再做出 approve 或 reject 的决定。
