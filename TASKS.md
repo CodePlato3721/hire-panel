@@ -24,7 +24,7 @@
   `POST /api/sessions/{session_id}/jd/reply`（审批/修改 criteria，恢复 graph，SSE 流）
   router 内直接调用 `build_jd_graph(get_checkpointer())`，router + schema 层。
 
-- [ ] **Task D** — Resume 端点
+- [x] **Task D** — Resume 端点
   `POST /api/sessions/{session_id}/resumes`（上传文件，运行 resume graph，SSE 流）
   router 内直接调用 `build_resume_graph(get_checkpointer())`，router + schema 层。
 

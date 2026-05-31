@@ -8,7 +8,7 @@ if sys.platform == "win32":
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from backend.services.db import init_db, close_db
-from backend.routers import sessions, jd
+from backend.routers import sessions, jd, resume
 
 
 @asynccontextmanager
@@ -21,3 +21,4 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="hire-panel", lifespan=lifespan)
 app.include_router(sessions.router)
 app.include_router(jd.router)
+app.include_router(resume.router)
