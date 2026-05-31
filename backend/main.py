@@ -7,6 +7,7 @@ if sys.platform == "win32":
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from backend.services.db import init_db, close_db
 from backend.routers import sessions, jd, resume, feedback
 
@@ -19,6 +20,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="hire-panel", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(sessions.router)
 app.include_router(jd.router)
 app.include_router(resume.router)
