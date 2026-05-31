@@ -111,11 +111,11 @@ CR 创建后等待用户 reply。reply 分为以下几种：
 
 #### reply 后的 CR 文件操作
 
-CR 文件**只存储在本地**，不会提交。approve 或 reject 执行完对应操作后：
+approve 或 reject 执行完对应操作后：
 - `.cr.md` 中增加 **Reply** 段落，写上reply的结果和理由。可选的结果有 approve, reject
-- `.cr.md` 重命名为 `.cr.<timestamp>.md`，`timestamp` 格式 `yyyyMMddhhmmss`
-- 移入 `.cr` 文件夹（不存在则新建）
-- `.cr.md` 和 `.cr/` 已加入 `.gitignore`
+- `.cr.md` 重命名为 `cr.<timestamp>.md`，`timestamp` 格式 `yyyyMMddHHmmss`
+- 移入 `cr` 文件夹（不存在则新建）
+- `cr` 文件夹会提交到 git；`.cr.md` 已加入 `.gitignore`
 
 #### CR 的格式
 
@@ -162,7 +162,7 @@ CR中可选的测试方式有端到端测试，单元测试，无测试。他们
 - **Test Result**：单元测试的结果
 
 **端到端测试**
-模型自己在 `tests/e2d`下新增，更改端到端测试，将执行结果摘要写入 Test Result
+模型自己在 `tests/e2d`下新增，更改端到端测试，执行端到端测试，将执行结果摘要写入 Test Result
 - **Test Details**：写出本次单元测试的测试目的，方式的摘要
 - **Test Tree**：本次改动的测试文件树（ASCII 树）
 - **Test Result**：端到端测试的结果
