@@ -44,7 +44,7 @@
 
 ## 前端阶段
 
-- [ ] **Task H** — Scaffold + API 客户端层
+- [x] **Task H** — Scaffold + API 客户端层
   创建 `frontend/` 目录，Vite React TS 项目，`src/api.ts` 封装所有 HTTP + SSE 调用（5 个后端端点）。
 
 - [ ] **Task I** — App shell：两栏布局 + Session 生命周期
