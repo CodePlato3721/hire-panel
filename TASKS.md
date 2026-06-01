@@ -1,8 +1,8 @@
 # TASKS.md
 
-当前进行中的工程：**前后端分离重构 — 后端阶段**
+当前进行中的工程：**前后端分离重构 — 前端阶段**
 
-目标：用 FastAPI + PostgreSQL（neon.tech）替代 Streamlit，前端留给后续 React 阶段。
+目标：用 Vite + React + TypeScript 构建前端，对接已完成的 FastAPI 后端。
 
 ---
 
@@ -39,3 +39,22 @@
 - [x] **Task G** — CORS middleware
   `backend/main.py` 加 `CORSMiddleware`，允许 React dev server（localhost:5173）跨域。
   app 层。
+
+---
+
+## 前端阶段
+
+- [ ] **Task H** — Scaffold + API 客户端层
+  创建 `frontend/` 目录，Vite React TS 项目，`src/api.ts` 封装所有 HTTP + SSE 调用（5 个后端端点）。
+
+- [ ] **Task I** — App shell：两栏布局 + Session 生命周期
+  `App.tsx` 管理 session（localStorage 存 session_id，启动时创建或恢复），渲染左右两栏骨架。
+
+- [ ] **Task J** — JD 流程
+  "Fill JD" 按钮 → 文本输入 → `POST /jd`（SSE）→ interrupt 时展示审批界面 → `POST /jd/reply` → 左栏显示 criteria。
+
+- [ ] **Task K** — Resume 上传流程
+  "Upload Resumes" 按钮 → 文件选择（PDF/txt）→ `POST /resumes`（multipart，SSE）→ 左栏表格显示评分。
+
+- [ ] **Task L** — Feedback/Chat 流程
+  右栏输入框 → `POST /feedback`（SSE）→ 左栏表格实时更新简历评分。
