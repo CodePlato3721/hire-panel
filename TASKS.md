@@ -47,7 +47,7 @@
 - [x] **Task H** — Scaffold + API 客户端层
   创建 `frontend/` 目录，Vite React TS 项目，`src/api.ts` 封装所有 HTTP + SSE 调用（5 个后端端点）。
 
-- [ ] **Task I** — App shell：两栏布局 + Session 生命周期
+- [x] **Task I** — App shell：两栏布局 + Session 生命周期
   `App.tsx` 管理 session（localStorage 存 session_id，启动时创建或恢复），渲染左右两栏骨架。
 
 - [ ] **Task J** — JD 流程
