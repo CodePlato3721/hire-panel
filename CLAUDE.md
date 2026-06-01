@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Workflow Rules
 
 - **Never commit changes directly.** After making any code modifications, stop and wait for the user to review the diff before creating any git commit.
+- **同时加载项目规则文件**：加载 `CLAUDE.md` 时，必须同时读取 `CR.md` 和 `TASKS.md`。
 
 ## Commands
 
