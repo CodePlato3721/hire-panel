@@ -36,3 +36,4 @@ Thumbs.db
 # UV
 .python-version
 .cr.md
+cr/.cr.*
