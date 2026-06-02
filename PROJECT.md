@@ -78,6 +78,12 @@ Each criterion is scored 1–10; `total_score` is the raw sum — not normalized
 - Graph state is persisted with `MemorySaver` and scoped by `thread_id` in `configurable` — each test flow uses its own thread.
 - `HRMemory` accumulates across feedback rounds; pass it forward explicitly when chaining the resume and feedback graphs. Currently in-memory only; plan is to persist to a markdown file in a future iteration.
 
+## 编码规范
+
+- **禁止 magic number / magic string**：数字或字符串字面量有语义时，必须提取为具名常量（`const` 对象 + `as const` 或普通 `const`）。仅在以下情况可直接使用字面量：值是辨别联合类型的 discriminant（如 `event.type === 'token'`），且只在一处出现、含义完全自明。
+- **前端 TSX 保持轻量**：组件只负责渲染，状态、副作用、事件处理必须提取到 custom hook（`use*`）中。hook 放在与组件同目录或 `hooks/` 目录下，测试文件与 hook 同目录（`useXxx.test.ts`）。
+- **前端单元测试采用 Chicago 派风格**：mock 只用于让被测代码能运行（隔离外部依赖、控制返回值），不断言 mock 被调用了多少次或以什么参数调用。只断言可观察的状态结果。
+
 ## 单次改动规范
 
 ### 颗粒度
@@ -111,7 +117,7 @@ CR 创建后等待用户 reply。reply 分为以下几种：
 - **reject**：回复"reject, <理由>"。回滚所有改动。并进行**reply 后的 CR 文件操作**。
 - **remake**：回复"remake"。当 CR 混乱或内容有误时使用。模型基于 `git diff HEAD` 全量 diff 从头生成一份新 CR，覆盖当前 `.cr.md`，回显给用户后继续等待 reply。
 - **ask**：用户通过多轮提问了解本次改动的细节，不造成任何代码改动。模型只回答问题，不执行任何操作，不重新生成 CR。用户问完后再做出 approve 或 reject 的决定。
-- **modify**：修改。用户可以：1. 自己手动更改并要求模型再次生成 CR；2. 让模型修改代码，模型自动再生成一次 CR。再次生成 CR 后继续等待 reply，重复此动作。重新生成的 CR 必须在**现有 CR 基础上补充或修正**，不得将当前 CR 整体替换重做——只有方案发生根本性变化时，才由用户先 reject 再重新生成。
+- **modify**：修改。用户可以：1. 自己手动更改并要求模型更新 CR；2. 让模型修改代码，模型自动更新 CR。**更新 CR 时只在现有 `.cr.md` 基础上补充或修正变更内容，不得整体重做**——在受影响的字段（Source Details、Source Tree、Test Result 等）追加或修改对应内容即可。更新后回显给用户并继续等待 reply。只有收到 `remake` 指令时才从头重写 CR。
 
 #### reply 后的 CR 文件操作
 
