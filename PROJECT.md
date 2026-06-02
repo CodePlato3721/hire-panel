@@ -19,8 +19,8 @@ python main.py
 # Run the Streamlit UI
 uv run streamlit run app.py
 
-# Run the FastAPI backend (loads .env automatically)
-uv run --env-file .env uvicorn backend.main:app --reload
+# Run the FastAPI backend (loads .env automatically, Windows-compatible)
+uv run --env-file .env python scripts/run_server.py
 
 # Run the React frontend dev server
 cd frontend; npm run dev

@@ -41,7 +41,7 @@ async def get_session(session_id: str):
         stage = "feedback_done"
     elif resume_vals.get("resumes"):
         stage = "resume_done"
-    elif jd_snap and jd_snap.next:
+    elif jd_snap and "approve_criteria" in (jd_snap.next or []):
         stage = "jd_pending"
     elif criteria:
         stage = "jd_done"
