@@ -53,7 +53,7 @@
 - [x] **Task J** — JD 流程
   "Fill JD" 按钮 → 文本输入 → `POST /jd`（SSE）→ interrupt 时展示审批界面 → `POST /jd/reply` → 左栏显示 criteria。
 
-- [ ] **Task K** — Resume 上传流程
+- [x] **Task K** — Resume 上传流程
   "Upload Resumes" 按钮 → 文件选择（PDF/txt）→ `POST /resumes`（multipart，SSE）→ 左栏表格显示评分。
 
 - [ ] **Task L** — Feedback/Chat 流程

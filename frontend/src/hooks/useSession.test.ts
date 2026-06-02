@@ -82,3 +82,21 @@ describe('handleCriteriaDone', () => {
     })
   })
 })
+
+describe('handleResumesDone', () => {
+  it('updates resumes and advances stage to ResumeDone', async () => {
+    vi.mocked(createSession).mockResolvedValue(SESSION_ID)
+    const { result } = renderHook(() => useSession())
+    await waitFor(() => expect(result.current.sessionId).toBe(SESSION_ID))
+
+    const newResumes = [
+      { filename: 'alice.pdf', content: '', total_score: 42, reason: 'Strong Python', detail: '' },
+    ]
+    result.current.handleResumesDone(newResumes)
+
+    await waitFor(() => {
+      expect(result.current.resumes).toEqual(newResumes)
+      expect(result.current.stage).toBe(Stage.ResumeDone)
+    })
+  })
+})

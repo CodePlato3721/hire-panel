@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { createSession, getSession, Stage } from '../api'
-import type { ScoringCriteria } from '../api'
+import type { ScoringCriteria, Resume } from '../api'
 
 export const SESSION_KEY = 'hire_panel_session_id'
 
@@ -8,6 +8,7 @@ export function useSession() {
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [stage, setStage] = useState<Stage>(Stage.Idle)
   const [criteria, setCriteria] = useState<ScoringCriteria[]>([])
+  const [resumes, setResumes] = useState<Resume[]>([])
 
   useEffect(() => {
     const stored = localStorage.getItem(SESSION_KEY)
@@ -16,6 +17,7 @@ export function useSession() {
         .then(state => {
           setStage(state.stage)
           setCriteria(state.criteria)
+          setResumes(state.resumes)
           setSessionId(stored)
         })
         .catch(() => {
@@ -38,5 +40,10 @@ export function useSession() {
     setStage(Stage.JdDone)
   }
 
-  return { sessionId, stage, criteria, handleCriteriaDone }
+  function handleResumesDone(newResumes: Resume[]) {
+    setResumes(newResumes)
+    setStage(Stage.ResumeDone)
+  }
+
+  return { sessionId, stage, criteria, resumes, handleCriteriaDone, handleResumesDone }
 }

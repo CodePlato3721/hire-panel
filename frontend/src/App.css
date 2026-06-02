@@ -201,3 +201,67 @@
   color: var(--text);
   font-size: 14px;
 }
+
+/* ── Resume Upload (right panel) ── */
+
+.resume-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+
+.resume-streaming {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resume-done {
+  color: var(--text);
+  font-size: 14px;
+}
+
+/* ── Resume Table (left panel) ── */
+
+.resume-table-section {
+  margin-top: 32px;
+}
+
+.resume-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.resume-table th {
+  text-align: left;
+  padding: 6px 10px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+
+.resume-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.resume-name {
+  color: var(--text-h);
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.resume-score {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.resume-reason {
+  color: var(--text);
+  line-height: 1.5;
+}
