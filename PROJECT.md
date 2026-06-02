@@ -18,6 +18,12 @@ python main.py
 
 # Run the Streamlit UI
 uv run streamlit run app.py
+
+# Run the FastAPI backend (loads .env automatically)
+uv run --env-file .env uvicorn backend.main:app --reload
+
+# Run the React frontend dev server
+cd frontend; npm run dev
 ```
 
 The project has no lint or unit test configuration yet. Integration tests are standalone scripts, not pytest suites.

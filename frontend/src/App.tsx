@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react'
-import { createSession, getSession } from './api'
+import { createSession, getSession, Stage } from './api'
+import type { ScoringCriteria } from './api'
+import CriteriaList from './components/CriteriaList'
+import JdFlow from './components/JdFlow'
 import './App.css'
 
 const SESSION_KEY = 'hire_panel_session_id'
 
 function App() {
   const [sessionId, setSessionId] = useState<string | null>(null)
+  const [stage, setStage] = useState<Stage>(Stage.Idle)
+  const [criteria, setCriteria] = useState<ScoringCriteria[]>([])
 
   useEffect(() => {
     const stored = localStorage.getItem(SESSION_KEY)
     if (stored) {
       getSession(stored)
-        .then(() => {
+        .then(state => {
+          setStage(state.stage)
+          setCriteria(state.criteria)
           setSessionId(stored)
         })
         .catch(() => {
@@ -29,14 +36,25 @@ function App() {
     }
   }, [])
 
+  function handleCriteriaDone(newCriteria: ScoringCriteria[]) {
+    setCriteria(newCriteria)
+    setStage(Stage.JdDone)
+  }
+
   return (
     <div className="app">
       <div className="left-panel">
-        {/* criteria + resume table — Task J / K */}
-        <p className="placeholder">session: {sessionId ?? 'initializing…'}</p>
+        <CriteriaList criteria={criteria} />
       </div>
       <div className="right-panel">
-        {/* chat window — Task J / K / L */}
+        {sessionId && (
+          <JdFlow
+            sessionId={sessionId}
+            initialStage={stage}
+            initialCriteria={criteria}
+            onCriteriaDone={handleCriteriaDone}
+          />
+        )}
       </div>
     </div>
   )

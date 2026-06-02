@@ -2,7 +2,15 @@ const BASE_URL = 'http://localhost:8000'
 
 // --- Types ---
 
-export type Stage = 'idle' | 'jd_pending' | 'jd_done' | 'resume_done' | 'feedback_done'
+export const Stage = {
+  Idle: 'idle',
+  JdPending: 'jd_pending',
+  JdDone: 'jd_done',
+  ResumeDone: 'resume_done',
+  FeedbackDone: 'feedback_done',
+} as const
+
+export type Stage = typeof Stage[keyof typeof Stage]
 
 export interface ScoringCriteria {
   name: string
