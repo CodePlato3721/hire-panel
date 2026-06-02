@@ -1,22 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { submitJd, replyJd, Stage } from '../api'
-import type { ScoringCriteria, SSEEvent } from '../api'
-
-const JdUiState = {
-  Idle: 'idle',
-  Input: 'input',
-  Streaming: 'streaming',
-  Approving: 'approving',
-  Done: 'done',
-} as const
-
-type JdUiState = typeof JdUiState[keyof typeof JdUiState]
-
-function getInitialUiState(stage: Stage): JdUiState {
-  if (stage === Stage.JdPending) return JdUiState.Approving
-  if (stage === Stage.JdDone || stage === Stage.ResumeDone || stage === Stage.FeedbackDone) return JdUiState.Done
-  return JdUiState.Idle
-}
+import { useJdFlow, JdUiState } from '../hooks/useJdFlow'
+import type { ScoringCriteria, Stage } from '../api'
 
 interface Props {
   sessionId: string
@@ -26,64 +9,16 @@ interface Props {
 }
 
 export default function JdFlow({ sessionId, initialStage, initialCriteria, onCriteriaDone }: Props) {
-  const [uiState, setUiState] = useState<JdUiState>(() => getInitialUiState(initialStage))
-  const [jdText, setJdText] = useState('')
-  const [streamText, setStreamText] = useState('')
-  const [pendingCriteria, setPendingCriteria] = useState<ScoringCriteria[]>(
-    initialStage === Stage.JdPending ? initialCriteria : [],
-  )
-  const [replyText, setReplyText] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const streamRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (streamRef.current) {
-      streamRef.current.scrollTop = streamRef.current.scrollHeight
-    }
-  }, [streamText])
-
-  async function handleSubmitJd() {
-    if (!jdText.trim()) return
-    setUiState(JdUiState.Streaming)
-    setStreamText('')
-    setIsLoading(true)
-    try {
-      await submitJd(sessionId, jdText, (event: SSEEvent) => {
-        if (event.type === 'token') {
-          setStreamText(prev => prev + event.content)
-        } else if (event.type === 'done' && 'interrupted' in event) {
-          if (event.interrupted) {
-            setPendingCriteria(event.criteria)
-            setUiState(JdUiState.Approving)
-          } else {
-            onCriteriaDone(event.criteria)
-            setUiState(JdUiState.Done)
-          }
-        }
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  async function handleReplyJd() {
-    if (!replyText.trim() || isLoading) return
-    setUiState(JdUiState.Streaming)
-    setStreamText('')
-    setIsLoading(true)
-    try {
-      await replyJd(sessionId, replyText, (event: SSEEvent) => {
-        if (event.type === 'token') {
-          setStreamText(prev => prev + event.content)
-        } else if (event.type === 'done' && 'interrupted' in event) {
-          onCriteriaDone(event.criteria)
-          setUiState(JdUiState.Done)
-        }
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const {
+    uiState,
+    jdText, setJdText,
+    streamText, streamRef,
+    pendingCriteria,
+    replyText, setReplyText,
+    isLoading,
+    startInput, cancelInput,
+    handleSubmitJd, handleReplyJd,
+  } = useJdFlow({ sessionId, initialStage, initialCriteria, onCriteriaDone })
 
   if (uiState === JdUiState.Done) {
     return (
@@ -96,7 +31,7 @@ export default function JdFlow({ sessionId, initialStage, initialCriteria, onCri
   if (uiState === JdUiState.Idle) {
     return (
       <div className="jd-idle">
-        <button className="quick-action" onClick={() => setUiState(JdUiState.Input)}>Fill JD</button>
+        <button className="quick-action" onClick={startInput}>Fill JD</button>
       </div>
     )
   }
@@ -113,7 +48,7 @@ export default function JdFlow({ sessionId, initialStage, initialCriteria, onCri
           autoFocus
         />
         <div className="jd-actions">
-          <button className="btn-secondary" onClick={() => setUiState(JdUiState.Idle)}>Cancel</button>
+          <button className="btn-secondary" onClick={cancelInput}>Cancel</button>
           <button className="btn-primary" onClick={handleSubmitJd} disabled={!jdText.trim()}>
             Analyze
           </button>
