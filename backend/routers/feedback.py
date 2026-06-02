@@ -6,14 +6,12 @@ from langchain_core.messages import HumanMessage
 from backend.schemas.feedback import FeedbackRequest
 from backend.services.db import get_checkpointer
 from backend.services.session import graph_config
+from backend.services.snapshot import get_criteria, EMPTY_HR_MEMORY
 from backend.routers.sse import events_to_sse_tokens
-from pipeline.jd_graph import build_jd_graph
 from pipeline.resume_graph import build_resume_graph
 from pipeline.feedback_graph import build_feedback_graph
 
 router = APIRouter(prefix="/api/sessions", tags=["feedback"])
-
-_EMPTY_HR_MEMORY = {"scoring_preferences": [], "adjustment_history": []}
 
 
 async def _stream_feedback(events, graph, config):
@@ -27,8 +25,7 @@ async def _stream_feedback(events, graph, config):
 async def submit_feedback(session_id: str, req: FeedbackRequest):
     checkpointer = get_checkpointer()
 
-    jd_state = await build_jd_graph(checkpointer).aget_state(graph_config(session_id, "jd"))
-    criteria = jd_state.values.get("scoring_criteria", [])
+    criteria = await get_criteria(session_id)
 
     feedback_config = graph_config(session_id, "feedback")
     graph = build_feedback_graph(checkpointer)
@@ -36,11 +33,12 @@ async def submit_feedback(session_id: str, req: FeedbackRequest):
 
     if prev and prev.values:
         resumes = prev.values.get("resumes", [])
-        hr_memory = prev.values.get("hr_memory", _EMPTY_HR_MEMORY)
+        hr_memory = prev.values.get("hr_memory", EMPTY_HR_MEMORY)
     else:
         resume_state = await build_resume_graph(checkpointer).aget_state(graph_config(session_id, "resume"))
         resumes = resume_state.values.get("resumes", [])
-        hr_memory = _EMPTY_HR_MEMORY
+        hr_memory = EMPTY_HR_MEMORY
+
     events = graph.astream_events(
         {
             "messages": [HumanMessage(content=req.feedback)],

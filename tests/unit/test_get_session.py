@@ -11,20 +11,12 @@ def _snap(values=None, next_nodes=None):
     return s
 
 
-def _patch_graphs(jd_snap, resume_snap, feedback_snap):
-    ctx = patch("backend.routers.sessions.get_checkpointer")
-    jd_ctx = patch("backend.routers.sessions.build_jd_graph")
-    res_ctx = patch("backend.routers.sessions.build_resume_graph")
-    fb_ctx = patch("backend.routers.sessions.build_feedback_graph")
-    return ctx, jd_ctx, res_ctx, fb_ctx, jd_snap, resume_snap, feedback_snap
-
-
 def _run(jd_snap, resume_snap, feedback_snap):
     with (
-        patch("backend.routers.sessions.get_checkpointer"),
-        patch("backend.routers.sessions.build_jd_graph") as mock_jd,
-        patch("backend.routers.sessions.build_resume_graph") as mock_res,
-        patch("backend.routers.sessions.build_feedback_graph") as mock_fb,
+        patch("backend.services.snapshot.get_checkpointer"),
+        patch("backend.services.snapshot.build_jd_graph") as mock_jd,
+        patch("backend.services.snapshot.build_resume_graph") as mock_res,
+        patch("backend.services.snapshot.build_feedback_graph") as mock_fb,
     ):
         mock_jd.return_value.aget_state = AsyncMock(return_value=jd_snap)
         mock_res.return_value.aget_state = AsyncMock(return_value=resume_snap)

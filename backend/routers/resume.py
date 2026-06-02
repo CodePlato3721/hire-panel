@@ -8,8 +8,8 @@ from fastapi.responses import StreamingResponse
 
 from backend.services.db import get_checkpointer
 from backend.services.session import graph_config
+from backend.services.snapshot import get_criteria
 from backend.routers.sse import events_to_sse_tokens
-from pipeline.jd_graph import build_jd_graph
 from pipeline.resume_graph import build_resume_graph
 
 router = APIRouter(prefix="/api/sessions", tags=["resume"])
@@ -33,8 +33,7 @@ async def _stream_resume(events, graph, config):
 async def upload_resumes(session_id: str, files: List[UploadFile] = File(...)):
     checkpointer = get_checkpointer()
 
-    jd_state = await build_jd_graph(checkpointer).aget_state(graph_config(session_id, "jd"))
-    criteria = jd_state.values.get("scoring_criteria", [])
+    criteria = await get_criteria(session_id)
 
     resumes = []
     for f in files:
