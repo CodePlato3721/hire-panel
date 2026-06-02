@@ -50,7 +50,7 @@
 - [x] **Task I** — App shell：两栏布局 + Session 生命周期
   `App.tsx` 管理 session（localStorage 存 session_id，启动时创建或恢复），渲染左右两栏骨架。
 
-- [ ] **Task J** — JD 流程
+- [x] **Task J** — JD 流程
   "Fill JD" 按钮 → 文本输入 → `POST /jd`（SSE）→ interrupt 时展示审批界面 → `POST /jd/reply` → 左栏显示 criteria。
 
 - [ ] **Task K** — Resume 上传流程
