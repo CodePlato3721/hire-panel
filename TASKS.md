@@ -56,5 +56,5 @@
 - [x] **Task K** — Resume 上传流程
   "Upload Resumes" 按钮 → 文件选择（PDF/txt）→ `POST /resumes`（multipart，SSE）→ 左栏表格显示评分。
 
-- [ ] **Task L** — Feedback/Chat 流程
+- [x] **Task L** — Feedback/Chat 流程
   右栏输入框 → `POST /feedback`（SSE）→ 左栏表格实时更新简历评分。

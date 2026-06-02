@@ -202,6 +202,21 @@
   font-size: 14px;
 }
 
+/* ── Feedback Chat (right panel) ── */
+
+.feedback-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.feedback-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* ── Resume Upload (right panel) ── */
 
 .resume-idle {

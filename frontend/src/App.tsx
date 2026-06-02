@@ -4,12 +4,17 @@ import CriteriaList from './components/CriteriaList'
 import ResumeTable from './components/ResumeTable'
 import JdFlow from './components/JdFlow'
 import ResumeUpload from './components/ResumeUpload'
+import FeedbackChat from './components/FeedbackChat'
 import './App.css'
 
 function App() {
-  const { sessionId, stage, criteria, resumes, handleCriteriaDone, handleResumesDone } = useSession()
+  const {
+    sessionId, stage, criteria, resumes,
+    handleCriteriaDone, handleResumesDone, handleFeedbackDone,
+  } = useSession()
 
-  const jdDone = stage === Stage.JdDone || stage === Stage.ResumeDone || stage === Stage.FeedbackDone
+  const resumeDone = stage === Stage.ResumeDone || stage === Stage.FeedbackDone
+  const jdDone = stage === Stage.JdDone || resumeDone
 
   return (
     <div className="app">
@@ -26,11 +31,17 @@ function App() {
             onCriteriaDone={handleCriteriaDone}
           />
         )}
-        {sessionId && jdDone && (
+        {sessionId && jdDone && !resumeDone && (
           <ResumeUpload
             sessionId={sessionId}
             initialStage={stage}
             onResumesDone={handleResumesDone}
+          />
+        )}
+        {sessionId && resumeDone && (
+          <FeedbackChat
+            sessionId={sessionId}
+            onFeedbackDone={handleFeedbackDone}
           />
         )}
       </div>

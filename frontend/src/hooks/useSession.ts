@@ -45,5 +45,10 @@ export function useSession() {
     setStage(Stage.ResumeDone)
   }
 
-  return { sessionId, stage, criteria, resumes, handleCriteriaDone, handleResumesDone }
+  function handleFeedbackDone(newResumes: Resume[]) {
+    setResumes(newResumes)
+    setStage(Stage.FeedbackDone)
+  }
+
+  return { sessionId, stage, criteria, resumes, handleCriteriaDone, handleResumesDone, handleFeedbackDone }
 }
