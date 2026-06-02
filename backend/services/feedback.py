@@ -3,8 +3,8 @@ from langchain_core.messages import HumanMessage
 from backend.services.db import get_checkpointer
 from backend.services.session import graph_config
 from backend.services.snapshot import get_criteria, EMPTY_HR_MEMORY
-from pipeline.resume_graph import build_resume_graph
-from pipeline.feedback_graph import build_feedback_graph
+from backend.pipeline.resume_graph import build_resume_graph
+from backend.pipeline.feedback_graph import build_feedback_graph
 
 
 async def _get_prev_feedback(session_id: str, checkpointer, graph, feedback_config):

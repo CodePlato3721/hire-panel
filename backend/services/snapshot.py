@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 from backend.services.db import get_checkpointer
 from backend.services.session import graph_config
-from pipeline.jd_graph import build_jd_graph
-from pipeline.resume_graph import build_resume_graph
-from pipeline.feedback_graph import build_feedback_graph
+from backend.pipeline.jd_graph import build_jd_graph
+from backend.pipeline.resume_graph import build_resume_graph
+from backend.pipeline.feedback_graph import build_feedback_graph
 
 EMPTY_HR_MEMORY: dict = {"scoring_preferences": [], "adjustment_history": []}
 

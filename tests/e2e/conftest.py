@@ -2,7 +2,7 @@ import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
-from pipeline import build_jd_graph, build_resume_graph
+from backend.pipeline import build_jd_graph, build_resume_graph
 from tests.e2e.sample_data import SAMPLE_JD, SAMPLE_RESUME
 
 

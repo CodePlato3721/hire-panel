@@ -6,11 +6,8 @@ import pdfplumber
 from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import StreamingResponse
 
-from backend.services.db import get_checkpointer
-from backend.services.session import graph_config
-from backend.services.snapshot import get_criteria
+from backend.services.resume import build_resume_stream
 from backend.routers.sse import events_to_sse_tokens
-from pipeline.resume_graph import build_resume_graph
 
 router = APIRouter(prefix="/api/sessions", tags=["resume"])
 
@@ -31,10 +28,6 @@ async def _stream_resume(events, graph, config):
 
 @router.post("/{session_id}/resumes")
 async def upload_resumes(session_id: str, files: List[UploadFile] = File(...)):
-    checkpointer = get_checkpointer()
-
-    criteria = await get_criteria(session_id)
-
     resumes = []
     for f in files:
         data = await f.read()
@@ -45,17 +38,5 @@ async def upload_resumes(session_id: str, files: List[UploadFile] = File(...)):
             "reason": "",
             "detail": "",
         })
-
-    graph = build_resume_graph(checkpointer)
-    config = graph_config(session_id, "resume")
-    events = graph.astream_events(
-        {
-            "messages": [],
-            "scoring_criteria": criteria,
-            "resumes": resumes,
-            "hr_memory": {"scoring_preferences": [], "adjustment_history": []},
-        },
-        config,
-        version="v2",
-    )
+    events, graph, config = await build_resume_stream(session_id, resumes)
     return StreamingResponse(_stream_resume(events, graph, config), media_type="text/event-stream")

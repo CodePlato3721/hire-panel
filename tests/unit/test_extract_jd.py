@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock, patch
 from langchain_core.messages import AIMessage
 
-from pipeline.nodes.extract_jd import extract_jd
+from backend.pipeline.nodes.extract_jd import extract_jd
 
 
 # ---------------------------------------------------------------------------
@@ -34,7 +34,7 @@ SAMPLE_CRITERIA = [
 # ---------------------------------------------------------------------------
 
 def test_returns_scoring_criteria():
-    with patch("pipeline.nodes.extract_jd.llm", _make_llm_mock(SAMPLE_CRITERIA)):
+    with patch("backend.pipeline.nodes.extract_jd.llm", _make_llm_mock(SAMPLE_CRITERIA)):
         result = extract_jd(SAMPLE_STATE)
 
     assert result["scoring_criteria"] == SAMPLE_CRITERIA
@@ -46,7 +46,7 @@ def test_returns_scoring_criteria():
 
 
 def test_message_with_empty_criteria():
-    with patch("pipeline.nodes.extract_jd.llm", _make_llm_mock([])):
+    with patch("backend.pipeline.nodes.extract_jd.llm", _make_llm_mock([])):
         result = extract_jd(SAMPLE_STATE)
 
     assert result["scoring_criteria"] == []
@@ -59,7 +59,7 @@ def test_message_with_empty_criteria():
 
 def test_llm_called_with_job_requirements():
     mock_llm = _make_llm_mock(SAMPLE_CRITERIA)
-    with patch("pipeline.nodes.extract_jd.llm", mock_llm):
+    with patch("backend.pipeline.nodes.extract_jd.llm", mock_llm):
         extract_jd(SAMPLE_STATE)
 
     invoke_args = mock_llm.with_structured_output.return_value.invoke.call_args[0][0]
@@ -75,7 +75,7 @@ def test_llm_called_with_job_requirements():
 def test_empty_job_requirements_passes_empty_string_to_llm():
     state = {**SAMPLE_STATE, "job_requirements": ""}
     mock_llm = _make_llm_mock(SAMPLE_CRITERIA)
-    with patch("pipeline.nodes.extract_jd.llm", mock_llm):
+    with patch("backend.pipeline.nodes.extract_jd.llm", mock_llm):
         extract_jd(state)
 
     invoke_args = mock_llm.with_structured_output.return_value.invoke.call_args[0][0]
@@ -86,7 +86,7 @@ def test_empty_job_requirements_passes_empty_string_to_llm():
 def test_none_job_requirements_does_not_crash():
     # f-string renders None as the literal string "None" — no TypeError
     state = {**SAMPLE_STATE, "job_requirements": None}
-    with patch("pipeline.nodes.extract_jd.llm", _make_llm_mock(SAMPLE_CRITERIA)):
+    with patch("backend.pipeline.nodes.extract_jd.llm", _make_llm_mock(SAMPLE_CRITERIA)):
         result = extract_jd(state)
 
     assert result["scoring_criteria"] == SAMPLE_CRITERIA
@@ -97,6 +97,6 @@ def test_llm_exception_propagates():
     # extract_jd has no error handling, so LLM errors must surface to the caller
     mock_llm = MagicMock()
     mock_llm.with_structured_output.return_value.invoke.side_effect = RuntimeError("API error")
-    with patch("pipeline.nodes.extract_jd.llm", mock_llm):
+    with patch("backend.pipeline.nodes.extract_jd.llm", mock_llm):
         with pytest.raises(RuntimeError, match="API error"):
             extract_jd(SAMPLE_STATE)

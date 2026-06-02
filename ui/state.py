@@ -1,5 +1,5 @@
 import streamlit as st
-from pipeline import build_jd_graph, build_resume_graph, build_feedback_graph
+from backend.pipeline import build_jd_graph, build_resume_graph, build_feedback_graph
 
 
 def init_session():

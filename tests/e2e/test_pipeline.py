@@ -2,7 +2,7 @@ import pytest
 from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 
-from pipeline import build_feedback_graph
+from backend.pipeline import build_feedback_graph
 
 
 @pytest.mark.e2e
