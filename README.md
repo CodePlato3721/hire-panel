@@ -1,3 +1,5 @@
+<img src="docs/logo.png" alt="Hire Panel Logo" width="80" />
+
 # 🗂️ Hire Panel
 
 An AI-powered resume screening tool. Paste a job description, let the AI extract scoring criteria, upload resumes to score them, then refine results with natural-language feedback.
