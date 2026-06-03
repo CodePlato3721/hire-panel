@@ -1,8 +1,17 @@
 # graph/jd_graph.py
+from typing import Annotated
+from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START
-from .state import JDState
+from langgraph.graph.message import add_messages
+from .schemas.jd_schemas import ScoringCriteria
 from .nodes.extract_jd import extract_jd
 from .nodes.approve_criteria import approve_criteria
+
+
+class JDState(TypedDict):
+    messages: Annotated[list, add_messages]
+    job_requirements: str
+    scoring_criteria: list[ScoringCriteria]
 
 
 def build_jd_graph(checkpointer):

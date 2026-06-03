@@ -1,9 +1,12 @@
 # graph/nodes/process_feedback.py
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import AIMessage
 from langgraph.types import Command
-from ..state import ResumeState
 from ..schemas.feedback_schemas import FeedbackAnalysis
+if TYPE_CHECKING:
+    from ..resume_graph import ResumeState
 from ..prompts.feedback_prompts import PROCESS_FEEDBACK_SYSTEM
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)

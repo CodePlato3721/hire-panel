@@ -1,6 +1,6 @@
 # graph/feedback_graph.py
 from langgraph.graph import StateGraph, START, END
-from .state import ResumeState
+from .resume_graph import ResumeState
 from .nodes.process_feedback import process_feedback
 from .nodes.rescore_all import rescore_all
 

@@ -1,6 +1,11 @@
 # graph/schemas/jd_schemas.py
+from typing import TypedDict
 from pydantic import BaseModel
-from ..state import ScoringCriteria
+
+
+class ScoringCriteria(TypedDict):
+    name: str
+    description: str
 
 
 class ExtractedCriteria(BaseModel):

@@ -1,9 +1,12 @@
 # graph/nodes/approve_criteria.py
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import AIMessage
 from langgraph.types import Command, interrupt
-from ..state import JDState
 from ..schemas.jd_schemas import ExtractedCriteria
+if TYPE_CHECKING:
+    from ..jd_graph import JDState
 from ..prompts.jd_prompts import REVISE_CRITERIA_SYSTEM
 from ..utils import format_criteria
 

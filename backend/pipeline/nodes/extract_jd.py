@@ -1,8 +1,11 @@
 # graph/nodes/extract_jd.py
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import AIMessage
-from ..state import JDState
 from ..schemas.jd_schemas import ExtractedCriteria
+if TYPE_CHECKING:
+    from ..jd_graph import JDState
 from ..prompts.jd_prompts import EXTRACT_JD_SYSTEM
 from ..utils import format_criteria
 

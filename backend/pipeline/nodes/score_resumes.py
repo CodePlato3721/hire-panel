@@ -1,8 +1,11 @@
 # graph/nodes/score_resumes.py
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import AIMessage
-from ..state import ResumeState
 from ..schemas.resume_schemas import ResumeScoringResult
+if TYPE_CHECKING:
+    from ..resume_graph import ResumeState
 from ..prompts.resume_prompts import SCORE_RESUME_SYSTEM
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
