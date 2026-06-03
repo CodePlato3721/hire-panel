@@ -1,15 +1,17 @@
-# Hire Panel
+# 🗂️ Hire Panel
 
 An AI-powered resume screening tool. Paste a job description, let the AI extract scoring criteria, upload resumes to score them, then refine results with natural-language feedback.
 
-## Features
+![Hire Panel Screenshot](doc/hire-panel-screenshot.png)
 
-- **Criteria extraction** — paste a job description; the AI extracts 4–6 structured scoring criteria with a human-in-the-loop approval step
-- **Resume scoring** — upload PDF resumes; each is scored against the criteria and displayed as `score / max` with a summary
-- **Feedback loop** — give natural-language feedback (e.g. "weight cloud experience more heavily") and the AI re-scores all resumes, remembering your preferences across rounds
-- **Split-panel UI** — criteria and resume scores on the left, conversational interface on the right
+## ✨ Features
 
-## Tech Stack
+- 📋 **Criteria extraction** — paste a job description; the AI extracts 4–6 structured scoring criteria with a human-in-the-loop approval step
+- 📊 **Resume scoring** — upload PDF resumes; each is scored against the criteria and displayed as `score / max` with a summary
+- 🔄 **Feedback loop** — give natural-language feedback (e.g. "weight cloud experience more heavily") and the AI re-scores all resumes, remembering your preferences across rounds
+- 🖥️ **Split-panel UI** — criteria and resume scores on the left, conversational interface on the right
+
+## 🛠️ Tech Stack
 
 | Layer | Library |
 |---|---|
@@ -20,7 +22,7 @@ An AI-powered resume screening tool. Paste a job description, let the AI extract
 | Checkpoint storage | Neon PostgreSQL (`psycopg_pool`) |
 | Data validation | Pydantic |
 
-## Getting Started
+## 🚀 Getting Started
 
 **Prerequisites:** Python 3.12+, [uv](https://github.com/astral-sh/uv), Node.js 18+, an OpenAI API key, a Neon database URL.
 
@@ -48,7 +50,7 @@ npm run dev
 
 Then open [http://localhost:5173](http://localhost:5173).
 
-## Usage
+## 📖 Usage
 
 1. Click **Fill JD** in the right panel and paste the job description
 2. Review the extracted criteria; reply with `approve` or send revisions
@@ -56,7 +58,7 @@ Then open [http://localhost:5173](http://localhost:5173).
 4. Scores appear in the left panel as `score / max` with a one-line summary per resume
 5. Enter feedback in the right panel to re-score; the AI updates scores and remembers your preferences
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 hire-panel/
