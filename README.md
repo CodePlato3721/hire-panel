@@ -1,4 +1,6 @@
-<img src="docs/logo.png" alt="Hire Panel Logo" width="80" />
+<p align="center">
+  <img src="docs/logo.png" alt="Hire Panel Logo" width="160" />
+</p>
 
 # 🗂️ Hire Panel
 
