@@ -20,7 +20,7 @@ function App() {
     <div className="app">
       <div className="left-panel">
         <CriteriaList criteria={criteria} />
-        <ResumeTable resumes={resumes} />
+        <ResumeTable resumes={resumes} maxScore={criteria.length * 10} />
       </div>
       <div className="right-panel">
         {sessionId && !jdDone && (
