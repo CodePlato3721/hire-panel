@@ -2,7 +2,7 @@
 
 An AI-powered resume screening tool. Paste a job description, let the AI extract scoring criteria, upload resumes to score them, then refine results with natural-language feedback.
 
-![Hire Panel Screenshot](doc/hire-panel-screenshot.png)
+![Hire Panel Screenshot](docs/hire-panel-screenshot.png)
 
 ## ✨ Features
 
