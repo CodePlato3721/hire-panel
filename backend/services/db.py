@@ -9,7 +9,7 @@ _checkpointer: AsyncPostgresSaver | None = None
 async def init_db() -> None:
     global _pool, _checkpointer
     url = os.environ["NEON_DATABASE_URL"]
-    _pool = AsyncConnectionPool(conninfo=url, max_size=10, open=False)
+    _pool = AsyncConnectionPool(conninfo=url, min_size=0, max_size=10, max_idle=60, open=False)
     await _pool.open()
     _checkpointer = AsyncPostgresSaver(_pool)
     await _checkpointer.setup()
